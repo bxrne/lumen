@@ -1,14 +1,6 @@
 open Lumen
-open View
 open Shapes
-
-let ray_for_pixel viewport camera_center i j =
-  let pixel_center =
-    viewport.upper_left
-    |> Vec.add (Vec.scale viewport.du (float_of_int i +. 0.5))
-    |> Vec.add (Vec.scale viewport.dv (float_of_int j +. 0.5))
-  in
-  Vec.normalize (Vec.sub pixel_center camera_center)
+open Camera
 
 let () =
   let image =
@@ -18,8 +10,8 @@ let () =
     { width; height }
   in
 
-  let camera_center = Vec.create 0.0 0.0 0.0 in
-  let viewport = make_viewport ~image ~focal_length:1.0 in
+  let camera = Camera.make_camera ~focal_length:1.0 () in
+  let viewport = make_viewport camera image in
   
   (* Create a sphere at origin (0,0,-2) with radius 0.5 *)
   let sphere = Shapes.create_sphere ~center:(Vec.create 0.0 0.0 (-2.0)) ~radius:0.5 in
@@ -31,8 +23,8 @@ let () =
 
   for j = 0 to image.height - 1 do
     for i = 0 to image.width - 1 do
-      let dir = ray_for_pixel viewport camera_center i j in
-      let ray = Ray.create camera_center dir in
+      let dir = ray_for_pixel viewport camera i j in
+      let ray = Ray.create camera.center dir in
 
       let hit_dist = hit_sphere sphere ray in
       let hit = hit_dist >= 0.0 in
