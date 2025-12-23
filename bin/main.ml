@@ -28,16 +28,17 @@ let () =
 
       let hit_dist = hit_sphere sphere ray in
       let hit = hit_dist >= 0.0 in
-      
 
-      
       if hit then
         hit_count := !hit_count + 1;
 
       let color = 
         if hit then
-          (* Red sphere *)
-          Vec.create 1.0 0.0 0.0
+          (* Calculate normal at hit point and map to RGB *)
+          let hit_point = Ray.at ray hit_dist in
+          let normal = Shapes.sphere_normal sphere hit_point in
+          (* Map normal components from [-1,1] to [0,1] and scale by 0.5 *)
+          Vec.scale (Vec.create (normal.x +. 1.0) (normal.y +. 1.0) (normal.z +. 1.0)) 0.5
         else
           (* simple sky gradient *)
           let t = 0.5 *. (dir.y +. 1.0) in
