@@ -26,14 +26,14 @@ let make_viewport ~image ~focal_length =
 
   let camera_center = create 0.0 0.0 0.0 in
 
+  (* Viewport axes: u is horizontal (right), v is vertical (down) *)
   let u = create viewport_width 0.0 0.0 in
   let v = create 0.0 viewport_height 0.0 in
 
+  (* Upper left corner: subtract half width, half height, and move forward by focal_length *)
   let upper_left =
     camera_center
-    |> sub (Vec.scale u 0.5)
-    |> sub (Vec.scale v 0.5)
-    |> sub (Vec.create 0.0 0.0 focal_length)
+    |> add (Vec.create (-.viewport_width /. 2.0) (-.viewport_height /. 2.0) (-.focal_length))
   in
 
   let du = scale u (1.0 /. float_of_int image.width) in
