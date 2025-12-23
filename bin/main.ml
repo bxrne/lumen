@@ -1,6 +1,5 @@
 open Lumen 
 
-
  let () =  
   let img = Ppm.create 100 100 in 
   (* Quadrants 1=green, 2=red, 3=blue, 4=white *)

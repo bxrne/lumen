@@ -30,3 +30,4 @@ let normalize v =
   let mag = magnitude v in 
   if mag = 0.0 then v
   else scale v (1.0 /. mag)
+
