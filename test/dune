@@ -1,2 +1,7 @@
 (test
- (name test_lumen))
+ (name test_lumen)
+ (libraries lumen ounit2))
+
+(test
+ (name test_vec)
+ (libraries lumen ounit2))

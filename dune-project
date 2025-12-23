@@ -19,7 +19,7 @@
  (name lumen)
  (synopsis "A short synopsis")
  (description "A longer description")
- (depends ocaml)
+ (depends ocaml ounit2)
  (tags
   ("add topics" "to describe" your project)))
 

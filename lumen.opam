@@ -12,6 +12,7 @@ bug-reports: "https://github.com/bxrne/lumen/issues"
 depends: [
   "dune" {>= "3.20"}
   "ocaml"
+  "ounit2"
   "odoc" {with-doc}
 ]
 build: [
