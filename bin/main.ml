@@ -1,16 +1,17 @@
 open Lumen 
 
-let gradient x y =
-  let r = (x * 255) / 99 in
-  let g = (y * 255) / 99 in
-  let b = 128 in
-  { Ppm.r = r; g = g; b = b }
 
-let () = 
+ let () =  
   let img = Ppm.create 100 100 in 
-  for y = 0 to img.height - 1 do 
-    for x = 0 to img.width - 1 do 
-      let color = gradient x y in
+  (* Quadrants 1=green, 2=red, 3=blue, 4=white *)
+  for y = 0 to 99 do 
+    for x = 0 to 99 do 
+      let color = 
+        if x < 50 && y < 50 then Vec.create 0.0 1.0 0.0
+        else if x >= 50 && y < 50 then Vec.create 1.0 0.0 0.0
+        else if x < 50 && y >= 50 then Vec.create 0.0 0.0 1.0
+        else Vec.create 1.0 1.0 1.0
+      in
       Ppm.edit_px img x y color
     done
   done;
