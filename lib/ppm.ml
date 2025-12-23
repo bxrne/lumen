@@ -3,17 +3,17 @@
 type color = { r: int; g: int; b: int }
 type image = { width: int; height: int; pixels: color array array }
 
-let create_image width height =
+let create width height =
   let pixels = Array.init height (fun _ -> Array.init width (fun _ -> { r = 0; g = 0; b = 0 })) in
   { width; height; pixels }
 
-let set_pixel img x y color =
+let edit_px img x y color =
   if x >= 0 && x < img.width && y >= 0 && y < img.height then
     img.pixels.(y).(x) <- color 
   else
     failwith "Pixel coordinates out of bounds"
 
-let write_ppm filename img =
+let save filename img =
   let oc = open_out filename in 
   Printf.fprintf oc "P3\n%d %d\n255\n" img.width img.height;
   for y = 0 to img.height - 1 do 
