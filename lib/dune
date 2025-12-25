@@ -1,3 +1,3 @@
 (library
  (name lumen)
- (modules ppm vec ray view shapes camera))
+ (modules ppm vec ray view shapes camera hittable color))

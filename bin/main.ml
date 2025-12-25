@@ -1,6 +1,8 @@
 open Lumen
 open Shapes
 open Camera
+open Hittable
+open Color
 
 let () =
   let image =
@@ -13,8 +15,14 @@ let () =
   let camera = Camera.make_camera ~focal_length:1.0 () in
   let viewport = make_viewport camera image in
   
-  (* Create a sphere at origin (0,0,-2) with radius 0.5 *)
-  let sphere = Shapes.create_sphere ~center:(Vec.create 0.0 0.0 (-2.0)) ~radius:0.5 in
+  (* Create hittable objects *)
+  let sphere = create_sphere ~center:(Vec.create 0.0 0.0 (-2.0)) ~radius:0.5 in
+  let ground = create_plane ~point:(Vec.create 0.0 (-0.5) 0.0) ~normal:(Vec.create 0.0 1.0 0.0) in
+  
+  let world = [
+    Sphere sphere;
+    Plane ground;
+  ] in
 
   let img = Ppm.create image.width image.height in
   let hit_count = ref 0 in
@@ -26,26 +34,15 @@ let () =
       let dir = ray_for_pixel viewport camera i j in
       let ray = Ray.create camera.center dir in
 
-      let hit_dist = hit_sphere sphere ray in
-      let hit = hit_dist >= 0.0 in
-
-      if hit then
+      (* Test ray against all hittable objects *)
+      let hit_record = hit_list world ray 0.0 Float.infinity in
+      
+      (* Count hits *)
+      if Option.is_some hit_record then
         hit_count := !hit_count + 1;
 
-      let color = 
-        if hit then
-          (* Calculate normal at hit point and map to RGB *)
-          let hit_point = Ray.at ray hit_dist in
-          let normal = Shapes.sphere_normal sphere hit_point in
-          (* Map normal components from [-1,1] to [0,1] and scale by 0.5 *)
-          Vec.scale (Vec.create (normal.x +. 1.0) (normal.y +. 1.0) (normal.z +. 1.0)) 0.5
-        else
-          (* simple sky gradient *)
-          let t = 0.5 *. (dir.y +. 1.0) in
-          let c1 = Vec.scale (Vec.create 1.0 1.0 1.0) (1.0 -. t) in
-          let c2 = Vec.scale (Vec.create 0.5 0.7 1.0) t in
-          Vec.add c1 c2
-      in
+      (* Calculate color using new color module *)
+      let color = calculate_ray_color ~hit_record ~ray_dir:dir in
 
       Ppm.edit_px img i j color
     done
