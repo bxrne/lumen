@@ -31,7 +31,8 @@ let () =
 
   for j = 0 to image.height - 1 do
     for i = 0 to image.width - 1 do
-      let dir = ray_for_pixel viewport camera i j in
+      let y_coord = image.height - 1 - j in
+      let dir = ray_for_pixel viewport camera i y_coord in
       let ray = Ray.create camera.center dir in
 
       (* Test ray against all hittable objects *)
